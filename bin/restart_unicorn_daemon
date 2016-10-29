@@ -1,0 +1,4 @@
+#!/bin/bash
+
+./bin/stop_unicorn_daemon
+./bin/start_unicorn_daemon
