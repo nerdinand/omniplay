@@ -1,4 +1,5 @@
 require 'vlc-client'
+require_relative 'playlist'
 
 class Vlc
   attr_reader :vlc
@@ -17,6 +18,6 @@ class Vlc
   end
 
   def playlist
-    vlc.playlist
+    Playlist.new(vlc.playlist)
   end
 end

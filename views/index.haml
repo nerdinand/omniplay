@@ -1,5 +1,11 @@
 %div.title Welcome to Omniplay!
 
+%ul
+  - @playlist.items.each do |playlist_item|
+    %li= "#{playlist_item.title} (#{playlist_item.length})"
+
+%pre= h @playlist.inspect
+
 %form{action: '/upload', method: 'post', enctype: 'multipart/form-data'}
   %input{type: 'file', name: 'file'}
   %input{type: 'submit', value: 'Upload'}

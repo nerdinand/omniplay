@@ -5,6 +5,11 @@ require_relative 'config/config'
 require_relative 'vlc'
 
 class Omniplay < Sinatra::Base
+  helpers do
+    def h(text)
+      Rack::Utils.escape_html(text)
+    end
+  end
 
   def self.run!
     $vlc = Vlc.new
@@ -13,8 +18,8 @@ class Omniplay < Sinatra::Base
   end
 
   get '/' do
+    @playlist = $vlc.playlist
     haml :index
-    $vlc.playlist
   end
 
   post '/upload' do
@@ -24,15 +29,16 @@ class Omniplay < Sinatra::Base
       redirect '/'
     end
 
-    puts "Uploading file, original name #{name.inspect}"
+    clean_file_name = "#{Time.now.to_i}-#{name.gsub(/[^0-9A-Za-z_\-\.]/, '-')}"
+    file_path = "tmp/#{clean_file_name}"
 
-    File.open('tmp/temp.mp3', 'w') do |file|
+    File.open(file_path, 'w') do |file|
       while bytes = tmpfile.read(65536)
         file.puts bytes
       end
     end
 
-    $vlc.add_to_playlist('tmp/temp.mp3')
+    $vlc.add_to_playlist(file_path)
     $vlc.play
 
     redirect '/'
